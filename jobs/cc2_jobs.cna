@@ -62,7 +62,11 @@ sub openJobDialog {
             cc2_job($bid, "kill", "all");
         } else {
             prompt_text("Kill PID", "<PID>", lambda({
-                cc2_job($bid, "kill", "$1");
+                if ($1) {
+                    cc2_job($bid, "kill", "$1");
+                } else {
+                    berror($bid, "*[error]: PID is required.");
+                }
             }, $bid => $bid));
         }
     }
