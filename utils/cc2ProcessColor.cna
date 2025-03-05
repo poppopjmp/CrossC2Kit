@@ -1,4 +1,3 @@
-
 # Color Coded Process Listing for CrossC2.
 #
 # Takes the PS output in CS and color codes all AV processes, explorer process, browsers processes, and current process running
@@ -218,6 +217,27 @@ sub format_ps{
     blog($bid, $outps);
 }
 
+# Error handling function
+sub handleError {
+    local('$errorMessage');
+    $errorMessage = $1;
+    println("Error: $errorMessage");
+}
+
+# Logging function
+sub logActivity {
+    local('$message');
+    $message = $1;
+    println("Log: $message");
+}
+
 ssh_alias ps {
-    bps($1, &format_ps);
+    bps($1, lambda({
+        try {
+            format_ps($1, $2);
+            logActivity("Process listing formatted successfully.");
+        } catch $error {
+            handleError("Failed to format process listing: $error");
+        }
+    }, $1 => $1, $2 => $2));
 }

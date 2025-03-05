@@ -1,10 +1,17 @@
 sub openSetEnvDialogCallBack {
+    local('$envKey $envValue');
     $envKey = $3['envKey'];
     $envValue = $3['envValue'];
-    bcc2_setenv($beaconid, $envKey, $envValue);
+    if ($envKey && $envValue) {
+        bcc2_setenv($beaconid, $envKey, $envValue);
+        blog($beaconid, "Environment variable set: $envKey=$envValue");
+    } else {
+        berror($beaconid, "Error: Both envKey and envValue must be provided.");
+    }
 }
 
 sub openSetEnvDialog {
+    local('$beaconid $dialog');
     $beaconid = $1;
     $dialog = dialog("SetEnv", %(beaconid => $beaconid, envKey => "TEST_PATH", envValue => "/usr/bin/:/usr/sbin/:/bin/:/sbin/"), &openSetEnvDialogCallBack);
     dialog_description($dialog, "setenv");
@@ -16,11 +23,15 @@ sub openSetEnvDialog {
     dialog_show($dialog);
 }
 
-sub openUnSetEnvDialog{
+sub openUnSetEnvDialog {
+    local('$bids');
     $bids = $1;
     prompt_text("unsetenv: ", "TEST_PATH", lambda({
         if ($1) {
             bcc2_unsetenv($bids, $1);
+            blog($bids, "Environment variable unset: $1");
+        } else {
+            berror($bids, "Error: envKey must be provided.");
         }
     }, $bids => $1));
 }
