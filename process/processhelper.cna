@@ -1,4 +1,3 @@
-
 sub bcc2_inject_cb {
     local('$taskName $taskType $taskResType');
     local('$injectMOD $inject_PID $injectObjectPath');
@@ -56,7 +55,7 @@ sub bcc2_inject {
         btask($bid, "[cc2_inject]: inject ".$injectObjectPath." to pid-[".$inject_PID."]");
         bawait_upload_raw($bid, $inject_Data, $savepath, $savename, &bcc2_inject_cb, @($injectMOD, $inject_PID, $injectObjectPath));
     } else {
-        berror($bid, "[cc2_inject]: unknow platform");
+        berror($bid, "[cc2_inject]: unknown platform");
     }
 }
 
@@ -68,7 +67,7 @@ sub cc2_inject {
     if (-exists script_resource($3)) { 
         $file = script_resource($3);
     }
-    $handle = openf($loadFilePath);
+    $handle = openf($file);
     $fileData = readb($handle, -1);
     closef($handle);
 

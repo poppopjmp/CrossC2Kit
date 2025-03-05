@@ -6,8 +6,6 @@ popup generator {
     }
 }
 
-
-
 sub getScript {
     local('%script_site');
     local('$Description, $Proto, $Host, $Port, $URI');
@@ -112,4 +110,45 @@ sub createScriptEditor {
     dbutton_action($dialog, "edit");
     dbutton_action($dialog, "cancel");
     dialog_show($dialog);
+}
+
+# Error handling function
+sub handleError {
+    local('$errorMessage');
+    $errorMessage = $1;
+    println("Error: $errorMessage");
+}
+
+# Improved script update functionality with error handling
+sub updateScript {
+    local('$script_url $script_content $desc $scheme $host $port $uri $host_and_port $host_and_uri');
+    $script_url = $1;
+    if ($script_url) {
+        $script_content = httpRequest("GET", $script_url, "");
+        if ($script_content) {
+            $desc = getScriptDesc($script_url);
+            $host = '';
+            $port = '';
+            ($scheme, $host_and_uri) = split('://', $script_url);
+            ($host_and_port, $uri) = split('/', $host_and_uri);
+            if (':' isin $host_and_port) {
+                ($host, $port) = split(':', $host_and_port);
+            }
+            if ($scheme && $host && $port && $uri && $desc) {
+                if ($scheme eq 'http') {
+                    site_kill($port, '/'.$uri);
+                    site_host($host, $port, '/'.$uri, $script_content, 'automatic', $desc, false);
+                } else if ($scheme eq 'https') {
+                    site_kill($port, '/'.$uri);
+                    site_host($host, $port, '/'.$uri, $script_content, 'automatic', $desc, true);
+                }
+            } else {
+                handleError("Invalid script URL components.");
+            }
+        } else {
+            handleError("Failed to retrieve script content.");
+        }
+    } else {
+        handleError("Script URL is empty.");
+    }
 }

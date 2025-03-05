@@ -3,6 +3,7 @@
 # --- Utility Functions ---
 
 # Generate a random string of specified length
+# This function generates a random string of the specified length using alphanumeric characters.
 sub random_string {
     local('$limit @random_str $characters $x $n');
     $limit = $1;
@@ -16,6 +17,7 @@ sub random_string {
 }
 
 # Determine CrossC2 task type based on file extension
+# This function determines the task type based on the file extension.
 sub runType {
     local('$type');
     $type = lc($1);
@@ -34,6 +36,7 @@ sub runType {
 }
 
 # Generate CrossC2 task information for dynamic loading
+# This function generates task information for dynamic loading.
 sub genTaskinfo_dyn {
     local('$taskType $taskAliasName $taskResType $taskNeedRun $taskNeedPersistence $taskXorKey $juicySize $transportArg $taskName');
     ($taskType, $taskAliasName, $taskResType, $taskNeedRun, $taskNeedPersistence, $taskXorKey, $juicySize, $transportArg) = @_;
@@ -46,6 +49,7 @@ sub genTaskinfo_dyn {
 }
 
 # Generate CrossC2 task information for in-memory script execution
+# This function generates task information for in-memory script execution.
 sub genMemScriptInfo {
     local('$scriptType $scriptEngPath $taskResType $juicySize $transportArg $taskinfo');
     ($scriptType, $scriptEngPath, $taskResType, $juicySize, $transportArg) = @_;
@@ -54,6 +58,7 @@ sub genMemScriptInfo {
 }
 
 # Construct header for injecting arguments into scripts
+# This function constructs a header for injecting arguments into scripts.
 sub scriptArgsHook {
     local('$scriptType @args $hook_header $index $value');
     ($scriptType, @args) = @_;
@@ -80,6 +85,7 @@ sub scriptArgsHook {
 }
 
 # Encode transport arguments using Base64
+# This function encodes transport arguments using Base64.
 sub transportArg {
     local('$arg $index $value');
     $arg = '';
@@ -90,6 +96,7 @@ sub transportArg {
 }
 
 # Encode transport arguments starting from a specific index
+# This function encodes transport arguments starting from a specific index.
 sub transportArgs {
     local('$afterIndex $arg $index $value');
     $afterIndex = int($1) - 1;
@@ -103,6 +110,7 @@ sub transportArgs {
 }
 
 # Create array of transport arguments starting from a specific index
+# This function creates an array of transport arguments starting from a specific index.
 sub transportArgsArray {
     local('$afterIndex @arg $index $value');
     $afterIndex = int($1) - 1;
@@ -114,6 +122,7 @@ sub transportArgsArray {
 }
 
 # Concatenate strings from a specific index with spaces
+# This function concatenates strings from a specific index with spaces.
 sub transportStrings {
     local('$afterIndex $arg $flag $index $value');
     $afterIndex = int($1) - 1;
@@ -131,6 +140,7 @@ sub transportStrings {
 # --- CrossC2 Interaction Functions ---
 
 # Upload dynamic library/executable with detailed control
+# This function uploads a dynamic library or executable with detailed control.
 sub bcrossc2_load_dyn_pro {
     local('$beaconid $taskType $taskName $taskResType $taskNeedRun $taskNeedPersistence $taskXorKey $loadFileName $taskArgs $loadFilePath $juicySize $handle $juicyData $ELFName');
     ($beaconid, $taskType, $taskName, $taskResType, $taskNeedRun, $taskNeedPersistence, $taskXorKey, $loadFileName, $taskArgs) = @_;
@@ -148,6 +158,7 @@ sub bcrossc2_load_dyn_pro {
 }
 
 # Upload dynamic library/executable with simplified parameters
+# This function uploads a dynamic library or executable with simplified parameters.
 sub bcrossc2_load_dyn {
     local('$beaconid $taskType $taskName $taskResType $loadFileName $taskArgs $loadFilePath $juicySize $handle $juicyData $taskTypeNum $ELFName');
     ($beaconid, $taskType, $taskName, $taskResType, $loadFileName, $taskArgs) = @_;
@@ -166,6 +177,7 @@ sub bcrossc2_load_dyn {
 }
 
 # Execute script in memory on CrossC2 server
+# This function executes a script in memory on the CrossC2 server.
 sub brun_script_in_mem {
     local('$beaconid $scriptType $scriptEngPath $taskResType $loadFileName @taskArgs $loadFilePath $juicySize $handle $juicyData $scriptName $header');
     ($beaconid, $scriptType, $scriptEngPath, $taskResType, $loadFileName, @taskArgs) = @_;
@@ -182,6 +194,7 @@ sub brun_script_in_mem {
 }
 
 # Handle in-memory script execution with various options
+# This function handles in-memory script execution with various options.
 sub CrossC2MemScriptEng {
     local('$scriptType $taskResType $beaconid $scriptEnginePath $contentType $scriptLocalPath $transportArg $juicySize $data $out @args $pathIndex $filename');
     ($scriptType, $taskResType, $beaconid, $contentType, $scriptLocalPath, $transportArg) = @_;
@@ -209,6 +222,7 @@ sub CrossC2MemScriptEng {
 # --- Beacon Metadata Functions ---
 
 # Set metadata key-value pairs for a beacon
+# This function sets metadata key-value pairs for a beacon.
 sub bset_metadata {
     local('$bid $metadata_key $metadata_value');
     ($bid, $metadata_key, $metadata_value) = @_;
@@ -217,6 +231,7 @@ sub bset_metadata {
 }
 
 # Set OS type metadata
+# This function sets the OS type metadata.
 sub bsetostype {
     local('$bid $ostype');
     ($bid, $ostype) = @_;
@@ -224,6 +239,7 @@ sub bsetostype {
 }
 
 # Set local IP metadata
+# This function sets the local IP metadata.
 sub bsetlocalip {
     local('$bid $localip');
     ($bid, $localip) = @_;
@@ -231,6 +247,7 @@ sub bsetlocalip {
 }
 
 # Set hostname metadata
+# This function sets the hostname metadata.
 sub bsethostname {
     local('$bid $hostname');
     ($bid, $hostname) = @_;
@@ -240,6 +257,7 @@ sub bsethostname {
 # --- Beacon Command Functions ---
 
 # Set environment variable on beacon
+# This function sets an environment variable on the beacon.
 sub bcc2_setenv {
     if ($1 && $2 && $3) {
         binput($1, "shell setenv $2 $3");
@@ -250,6 +268,7 @@ sub bcc2_setenv {
 }
 
 # Unset environment variable on beacon
+# This function unsets an environment variable on the beacon.
 sub bcc2_unsetenv {
     if ($1 && $2) {
         binput($1, "shell unsetenv $2");
@@ -260,12 +279,14 @@ sub bcc2_unsetenv {
 }
 
 # Spawn new session on beacon
+# This function spawns a new session on the beacon.
 sub bcc2_spawn {
     binput($1, 'shell spawn');
     bshell($1, 'spawn');
 }
 
 # Attempt to gain SYSTEM privileges on beacon
+# This function attempts to gain SYSTEM privileges on the beacon.
 sub bcc2_getsystem {
     binput($1, 'shell getsystem');
     bshell($1, 'getsystem');
@@ -277,6 +298,7 @@ sub bcc2_getsystem {
 global(@fileupload_list);
 
 # Upload file to beacon and track progress with callback
+# This function uploads a file to the beacon and tracks progress with a callback.
 sub bawait_upload {
     local('$bid $file_lpath $file_rpath $file_rname $file_data $file_size $cb $cb_args $handle $file_list_count');
     ($bid, $file_lpath, $file_rpath, $file_rname, $cb, $cb_args) = @_;
@@ -291,6 +313,7 @@ sub bawait_upload {
 }
 
 # Upload raw data as file to beacon and track progress with callback
+# This function uploads raw data as a file to the beacon and tracks progress with a callback.
 sub bawait_upload_raw {
     local('$bid $file_data $file_rpath $file_rname $cb $cb_args $file_size $file_lpath $file_list_count');
     ($bid, $file_data, $file_rpath, $file_rname, $cb, $cb_args) = @_;
@@ -303,6 +326,7 @@ sub bawait_upload_raw {
 }
 
 # Check file size on beacon to determine upload completion
+# This function checks the file size on the beacon to determine upload completion.
 sub bcheck_file_size {
     local('$bid $file_path $file_name $file_size');
     ($bid, $file_path, $file_name, $file_size) = @_;
@@ -330,6 +354,7 @@ sub bcheck_file_size {
 }
 
 # Periodically check file upload status and execute callbacks
+# This function periodically checks the file upload status and executes callbacks.
 on heartbeat_1s {
     local('$f_key $f_value $f_bid $f_lpath $f_rpath $f_rname $f_size $f_cb $f_cb_args $f_match_size $f_cb_runed');
     if (@fileupload_list) {
@@ -354,6 +379,7 @@ on heartbeat_1s {
 }
 
 # List files currently being uploaded
+# This function lists files currently being uploaded.
 ssh_alias list_uploadingFile {
     local('$bid $f_key $f_value $f_lpath');
     println(@fileupload_list);
@@ -369,6 +395,7 @@ ssh_alias list_uploadingFile {
 # --- CrossC2 Information Functions ---
 
 # Retrieve information about CrossC2 sites
+# This function retrieves information about CrossC2 sites.
 sub getCrossC2Site {
     local('%beacon_site $beacon_count $Description $Proto $Host $Port $URI $beaconURL');
     %beacon_site = %();
@@ -385,6 +412,7 @@ sub getCrossC2Site {
 }
 
 # Retrieve information about CrossC2 listeners
+# This function retrieves information about CrossC2 listeners.
 sub getCrossC2Listener {
     local('%beacon_listener $beacon_count $listener');
     %beacon_listener = %();
@@ -399,6 +427,7 @@ sub getCrossC2Listener {
 }
 
 # Retrieve active SSH sessions
+# This function retrieves active SSH sessions.
 sub getSSHSession {
     local('%sessionMap $sessionCount $beacon $internal $computer $tempMenuBar');
     %sessionMap = %();
@@ -415,6 +444,7 @@ sub getSSHSession {
 }
 
 # Retrieve beacon data associated with a CrossC2 listener
+# This function retrieves beacon data associated with a CrossC2 listener.
 sub getCrossC2Beacon {
     local('$listener $type $beaconData');
     ($listener, $type) = @_;

@@ -1,4 +1,3 @@
-
 # include(script_resource("CrossC2Kit.cna"));
 
 sub printUsage_keylogger {
@@ -55,8 +54,6 @@ sub openKeyloggerDialog {
     dbutton_action($dialog, "run");
     dialog_show($dialog);
 }
-
-
 
 sub cc2_keylogger_status {
     local('$bid $os $arch $system');
