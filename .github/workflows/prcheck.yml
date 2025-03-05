@@ -14,14 +14,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Cache third-party dependencies
-        uses: actions/cache@v3
-        with:
-          path: third-party
-          key: ${{ runner.os }}-third-party-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-third-party-
-
       - name: Build project
         id: build
         run: |
